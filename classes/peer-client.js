@@ -2,7 +2,7 @@ class PeerClient {
     constructor(onDataCallback = function () { }) {
         this.ID = null;
         this.connections = {};
-        this.peer = new Peer({ key: PeerClient.API_KEY, debug: PeerClient.DEBUG });
+        this.peer = new Peer({ key: PeerClient.API_KEY, debug: PeerClient.DEBUG, secure: window.location.protocol === 'https:' });
         this._onDataCallback = onDataCallback;
         this._CONNECTING_TO = {};
         this.MAX_MS_DEAD = 5000;
