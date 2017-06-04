@@ -12,11 +12,22 @@
 <script src="classes/muzzle-flash.js"></script>
 <script src="test.js"></script>
 <style>
-    * {cursor: none;}
+    * {
+        cursor: none;
+    }
+    
+    p {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
 </style>
 <center>
-<canvas id="myCanvas" width="800" height="800" style="border:1px solid #000000;"></canvas>
-<p> control with {w, a, s, d, 1, 2, 3, 4, mouse}. Copy url and share it with friends to join the game.</p>
+    <canvas id="myCanvas" width="800" height="800" style="border:1px solid #000000;"></canvas>
+    <p> control with {w, a, s, d, 1, 2, 3, 4, mouse}. Copy url and share it with friends to join the game.</p>
 </center>
 <script>
     //TEST();
