@@ -113,6 +113,8 @@ class Player {
             }
             jsonedObject[x] = this[x].toObject ? this[x].toObject() : this[x];
         }
+        jsonedObject._non_local_precise_getReloadPercentage = this.gun.getReloadPercentage();
+        jsonedObject._non_local_precise_getRapidFireWaitPercentage = this.gun.getRapidFireWaitPercentage();
         return jsonedObject;
     }
 
@@ -153,7 +155,8 @@ class Player {
         np.inv_sniperGun = SniperGun.FromJSON(json.inv_sniperGun);
         np.inv_bounceGun = BounceGun.FromJSON(json.inv_bounceGun);
 
-
+        np._non_local_precise_getReloadPercentage = json._non_local_precise_getReloadPercentage;
+        np._non_local_precise_getRapidFireWaitPercentage = json._non_local_precise_getRapidFireWaitPercentage
 
         return np;
     }
@@ -174,6 +177,11 @@ class Player {
         this.inv_shotGun = ShotGun.FromJSON(json.inv_shotGun);
         this.inv_sniperGun = SniperGun.FromJSON(json.inv_sniperGun);
         this.inv_bounceGun = BounceGun.FromJSON(json.inv_bounceGun);
+
+
+        this._non_local_precise_getReloadPercentage = json._non_local_precise_getReloadPercentage;
+        this._non_local_precise_getRapidFireWaitPercentage = json._non_local_precise_getRapidFireWaitPercentage
+
     }
 
     static stringToColour(str) {
@@ -416,10 +424,17 @@ class Player {
         ctx.lineWidth = infoW;
         ctx.strokeStyle = "yellow";
         if (this.gun.currentAmmo > 0) {
-            ctx.arc(...this.position, radiusInfoAmmo, 0, (2 * Math.PI * this.gun.currentAmmo / this.gun.maxAmmo) + (2 * Math.PI * 1 / this.gun.maxAmmo) * this.gun.getRapidFireWaitPercentage());
+            let rp = this._non_local_precise_getRapidFireWaitPercentage;
+            if (rp === undefined)
+                rp = this.gun.getRapidFireWaitPercentage();
+            ctx.arc(...this.position, radiusInfoAmmo, 0, (2 * Math.PI * this.gun.currentAmmo / this.gun.maxAmmo) + (2 * Math.PI * 1 / this.gun.maxAmmo) * rp);
         } else {
             ctx.strokeStyle = "orange";
-            ctx.arc(...this.position, radiusInfoAmmo, 0, 2 * Math.PI * this.gun.getReloadPercentage());
+            let rp = this._non_local_precise_getReloadPercentage;
+            if (rp === undefined)
+                rp = this.gun.getReloadPercentage();
+
+            ctx.arc(...this.position, radiusInfoAmmo, 0, 2 * Math.PI * rp);
         }
         ctx.stroke();
         ctx.closePath();
