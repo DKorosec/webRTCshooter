@@ -305,6 +305,8 @@ function initialize_game_loop() {
             }
         }
 
+
+        GameEngine.localPlayer.update();
         //update all players
         for (let pid in GameEngine.players) {
             if (GameEngine.players[pid].isDead()) {
@@ -314,7 +316,6 @@ function initialize_game_loop() {
                 Player.MAKE_SWAP_SOUND();
                 GameEngine.last_weapon_selected[pid] = GameEngine.players[pid].gun.TYPE;
             }
-            GameEngine.players[pid].update();
         }
 
 
