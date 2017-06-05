@@ -1,4 +1,27 @@
 class Player {
+
+
+    static INITIALIZE_SOUND() {
+        Player.SWAP_SRC_URL = 'sounds/swap.wav';
+        return new Promise((resolve, reject) => {
+            var sound = new Audio(Player.SWAP_SRC_URL);
+            sound.addEventListener('canplaythrough', resolve, false);
+        })
+    }
+
+
+    static MAKE_SWAP_SOUND() {
+        if (!Player.SWAP_SRC) {
+            Player.SWAP_SRC = document.createElement("source");
+            Player.SWAP_SRC.type = "audio/mpeg";
+            Player.SWAP_SRC.src = Player.SWAP_SRC_URL;
+        }
+        var snd = new Audio();
+        snd.volume = 0.01;
+        snd.appendChild(Player.SWAP_SRC);
+        snd.play();
+    }
+
     constructor(position, id) {
         this.ID = id;
 
@@ -255,7 +278,7 @@ class Player {
         }
         if (keyState.right) {
             let tmp_pos = this.position.copy();
-             this.position = this.position.add(this.direction.norm().leftSidePerpendicular().scale(this.moveSpeed));
+            this.position = this.position.add(this.direction.norm().leftSidePerpendicular().scale(this.moveSpeed));
             if (game_loop_check_player_collisons(true))
                 this.position = tmp_pos;
         }
@@ -273,17 +296,33 @@ class Player {
             this.gun.reload();
         }
         if (!this.gun.isReloading() && this.gun.getRapidFireWaitPercentage() == 0) { //if not reloading and weapon ready to fire
-            if (keyState.machineGun) {
-                this.gun = this.inv_machineGun;
-            }
-            if (keyState.shotGun) {
-                this.gun = this.inv_shotGun;
-            }
-            if (keyState.sniperGun) {
-                this.gun = this.inv_sniperGun;
-            }
-            if (keyState.bounceGun) {
-                this.gun = this.inv_bounceGun;
+            if (GameEngine.MouseWheelUsed) {
+                GameEngine.MouseWheelUsed = false;
+                if (GameEngine.MouseWheelValue == 0) {
+                    this.gun = this.inv_machineGun;
+                }
+                else if (GameEngine.MouseWheelValue == 1) {
+                    this.gun = this.inv_shotGun;
+                }
+                else if (GameEngine.MouseWheelValue == 2) {
+                    this.gun = this.inv_sniperGun;
+                }
+                else if (GameEngine.MouseWheelValue == 3) {
+                    this.gun = this.inv_bounceGun;
+                }
+            } else {
+                if (keyState.machineGun) {
+                    this.gun = this.inv_machineGun;
+                }
+                if (keyState.shotGun) {
+                    this.gun = this.inv_shotGun;
+                }
+                if (keyState.sniperGun) {
+                    this.gun = this.inv_sniperGun;
+                }
+                if (keyState.bounceGun) {
+                    this.gun = this.inv_bounceGun;
+                }
             }
         }
 

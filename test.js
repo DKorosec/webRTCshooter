@@ -221,6 +221,25 @@ function initialize_input_output() {
     window.addEventListener('mouseup', function (e) {
         GameEngine.MouseDown = false;
     }, false);
+
+    window.addEventListener('wheel', function (e) {
+        if (e.wheelDelta > 0)
+            GameEngine.MouseWheelValue--
+        else
+            GameEngine.MouseWheelValue++;
+
+
+
+        if (GameEngine.MouseWheelValue < 0)
+            GameEngine.MouseWheelValue = GameEngine.MouseWheel_MAX_VALUE;
+        if (GameEngine.MouseWheelValue > GameEngine.MouseWheel_MAX_VALUE) {
+            GameEngine.MouseWheelValue = 0;
+        }
+
+        GameEngine.MouseWheelUsed = true;
+
+
+    });
 }
 
 
@@ -288,6 +307,13 @@ function initialize_game_loop() {
 
         //update all players
         for (let pid in GameEngine.players) {
+            if (GameEngine.players[pid].isDead()) {
+                delete GameEngine.last_weapon_selected[pid];
+            }
+            else if (GameEngine.last_weapon_selected[pid] != GameEngine.players[pid].gun.TYPE) {
+                Player.MAKE_SWAP_SOUND();
+                GameEngine.last_weapon_selected[pid] = GameEngine.players[pid].gun.TYPE;
+            }
             GameEngine.players[pid].update();
         }
 
@@ -431,8 +457,12 @@ function main() {
     GameEngine.bullets = {};
     GameEngine.blood = {};
     GameEngine.muzzle_flash = {};
+    GameEngine.last_weapon_selected = {};
     GameEngine.walls = Wall.CreateBasicMap(GameEngine.MapDim.width, GameEngine.MapDim.height);
     GameEngine.client = null;
+    GameEngine.MouseWheelValue = 0;
+    GameEngine.MouseWheel_MAX_VALUE = 3;
+    GameEngine.MouseWheelUsed = true;
 
     console.log("loading textures...");
     var texture_promises = [];
@@ -447,6 +477,7 @@ function main() {
     texture_promises.push(Blood.INITIALIZE_TEXTURE());
     texture_promises.push(MuzzleFlash.INITIALIZE_TEXTURE());
     texture_promises.push(Bullet.INITIALIZE_SOUND());
+    texture_promises.push(Player.INITIALIZE_SOUND());
     Promise.all(texture_promises).then(() => {
         client = new PeerClient(dataRecieved => {
             GameEngine.players[dataRecieved.id] = Player.FromJSON(dataRecieved.data.playerData);
