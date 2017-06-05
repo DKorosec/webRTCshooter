@@ -430,6 +430,8 @@ class Player {
             ctx.arc(...this.position, radiusInfoAmmo, 0, (2 * Math.PI * this.gun.currentAmmo / this.gun.maxAmmo) + (2 * Math.PI * 1 / this.gun.maxAmmo) * rp);
         } else {
             ctx.strokeStyle = "orange";
+            //FireWait & realoadPercentage are cases for non local Players, we dont want to determine by time (because of time zones and time diff and lagg). But we want to use
+            //their last calculated values, which are generated when the class instance is beeing converted .toObject()!
             let rp = this._non_local_precise_getReloadPercentage;
             if (rp === undefined)
                 rp = this.gun.getReloadPercentage();
