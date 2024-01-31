@@ -2,8 +2,7 @@ class PeerClient {
     constructor(onDataCallback = function () { }) {
         this.ID = null;
         this.connections = {};
-        //Watch out, with API_KEY (aka not using your own peer server) HTTPS WILL NOT WORK!!!!!!!!!!!!!
-        this.peer = new Peer({ key: PeerClient.API_KEY, debug: PeerClient.DEBUG, secure: window.location.protocol === 'https:' });
+        this.peer = new Peer();
         this._onDataCallback = onDataCallback;
         this._CONNECTING_TO = {};
         this.MAX_MS_DEAD = 5000;
@@ -70,6 +69,3 @@ class PeerClient {
     }
 
 }
-//Well feggit you can get this key for FREE (dev purpose) on http://peerjs.com/peerserver#
-PeerClient.API_KEY = 'm5osyrg4vl323xr'; //look one line above...
-PeerClient.DEBUG = 0; //0 if disabled
